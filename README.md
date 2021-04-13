@@ -4,6 +4,18 @@
 
 *Move mouse to bring windows back.*
 
+### Python3 Script Usage:
+```bat
+py toggle_desktop.py
+```
+OR
+
+```bat
+python toggle_desktop.py
+```
+
+
+
 
 
 - [ ] Hide desktop icons when minimizing
