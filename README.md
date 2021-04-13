@@ -16,7 +16,7 @@ python toggle_desktop.py
 
 
 
-
+### TODO:
 
 - [ ] Hide desktop icons when minimizing
 - [ ] Remember how desktop icons were set before minimizing (no point bringing them back if the user had them hidden before)
