@@ -1,7 +1,7 @@
 ## Toggle hiding all windows upon idle
 
-Hide windows after idle for 10 minutes, intended for usage with wallpaper engine backgrounds, but will work with other screensavers.
-Move mouse to bring windows back.
+- Hide windows after idle for 10 minutes, intended for usage with wallpaper engine backgrounds, but will work with other screensavers.
+- Move mouse to bring windows back.
 
 ### Python3 Script Usage:
 ```bat
