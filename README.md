@@ -18,5 +18,6 @@ python toggle_desktop.py
 
 - [x] Set any interaction to bring windows back
 - [x] Run on startup with windows hidden
+- [ ] Allow IDLE_MINUTES to be set from command line
 - [ ] Hide desktop icons when minimizing
 - [ ] Remember how desktop icons were set before minimizing (no point bringing them back if the user had them hidden before)
