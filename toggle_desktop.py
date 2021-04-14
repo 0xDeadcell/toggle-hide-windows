@@ -1,56 +1,65 @@
-import subprocess
 import time
-from ctypes import windll, Structure, c_long, byref
-# Using ctypes because I would rather not have the user install dependencies (besides python)
+import os
+from ctypes import windll, Structure, c_uint, sizeof, byref
+# Using ctypes because I would rather not have the user install dependencies (besides python of course)
 
 
-
-class POINT(Structure):
-    _fields_ = [("x", c_long), ("y", c_long)]
-
-
-def check_for_scheduled_task(tn):
-    subprocess.check_output(f"schtasks.exe /query /tn {tn}", shell=False, universal_newlines=True, stderr=subprocess.STDOUT)
+class LASTINPUTINFO(Structure):
+    _fields_ = [
+        ('cbSize', c_uint),
+        ('dwTime', c_uint),
+    ]
 
 
-def create_scheduled_task(tn):
-    subprocess.call(f"schtasks.exe /create /tn {tn} /tr {__file__} /sc onidle /i 10", shell=False, universal_newlines=True, stderr=subprocess.STDOUT)
-
-
-def queryMousePosition():
-    pt = POINT()
-    windll.user32.GetCursorPos(byref(pt))
-    return pt.x, pt.y
+def get_idle_duration():
+    lastInputInfo = LASTINPUTINFO()
+    lastInputInfo.cbSize = sizeof(lastInputInfo)
+    windll.user32.GetLastInputInfo(byref(lastInputInfo))
+    millis = windll.kernel32.GetTickCount() - lastInputInfo.dwTime
+    return millis / 1000.0
 
 
 def toggle_hide_windows():
     windll.user32.keybd_event(0x5B, 0, 0, 0) # Left Windows Key Down
     windll.user32.keybd_event(0x44, 0, 0, 0) # "D" Key Down
-    windll.user32.keybd_event(0x44, 0, 0x0002, 0) # "D" Key Up
+    time.sleep(0.05)
     windll.user32.keybd_event(0x5B, 0, 0x0002, 0) # Left Windows Key Up
-
+    windll.user32.keybd_event(0x44, 0, 0x0002, 0) # "D" Key Up
 
 
 if __name__ == "__main__":
-    TASK_NAME = "toggle_desktop_on_idle"
+    IDLE_MINUTES = 15 # (15 minutes)
+    # Create the start up file
+    appdata = os.getenv('APPDATA')
     
-    # Error handling to check if task was already created, if not then create it.
-    try:
-        check_for_scheduled_task(tn=TASK_NAME)
-    except subprocess.CalledProcessError as e:
-        print(f"Could not find scheduled task: {TASK_NAME}, creating new one...")
-        create_scheduled_task(tn=TASK_NAME)
-        exit()
+    # If the startup file doesn't exist, then create it
+    if not os.path.exists(f"{appdata}\Microsoft\Windows\Start Menu\Programs\Startup\hide_windows.bat"):
+        try:
+            with open(f"{appdata}\Microsoft\Windows\Start Menu\Programs\Startup\hide_windows.bat", 'w') as f:
+                f.write(f'@echo off\n\npythonw "{__file__}"')
+            print(f"[+] Set [{__file__}] to run on startup at:\n{appdata}\Microsoft\Windows\Start Menu\Programs\Startup\hide_windows.bat\n\n")
+        except Exception as e:
+            input(str(e) + "\n\nPress any key to continue...")
+            exit()
         
-    except Exception as oop:
-        print(f"{oop}\n\nYou are likely missing schtasks.exe or the permission to schedule a task.")
+    while True:
+        print("[*] Waiting for idle...\n")
+        while True:
+            time.sleep(0.1)
+            if get_idle_duration() < float(IDLE_MINUTES):
+                # We sleep until we have waited the requested duration and are deemed 'idle'
+                continue
+            elif get_idle_duration() > float(IDLE_MINUTES):
+                break
 
-    time.sleep(0.20)
-    toggle_hide_windows() # Hide windows to show background.
-    original_pos = queryMousePosition() # Grab mouse position to check if the user has returned later on.
+        print("[*] IDLE - Hiding windows")
+        toggle_hide_windows() # Hide windows to show background (also resets the idle duration back to 0)
 
-    # Compare current mouse pos with mouse pos at start up.
-    while queryMousePosition() == original_pos:
-        time.sleep(0.1) # Don't completely hog the CPU (check 10x a second)
-    
-    toggle_hide_windows() # Out of the loop & the user returned, so bring the windows back up.
+        # Wait for the idle duration to increase back to 0.15
+        time.sleep(0.15)
+        while True:
+            if get_idle_duration() < 0.05:
+                break
+        
+        time.sleep(0.15)
+        toggle_hide_windows() # Out of the loop & the user returned, so bring the windows back up.
