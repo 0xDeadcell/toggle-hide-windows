@@ -3,21 +3,29 @@
 - Hide windows after idle for 10 minutes, intended for usage with wallpaper engine backgrounds, but will work with other screensavers.
 - Any interaction (keyboard usage, mouse movement) will bring windows back.
 
-### Python3 Script Usage:
+### Running with Python3:
+Call the script from the command line. Providing no arguments will set an idle_time trigger of 15 minutes.
+
 ```python
-py toggle_desktop.py
+py toggle_hide_windows.py -h
 ```
 OR
 
 ```python
-python toggle_desktop.py
+python toggle_hide_windows.py -h
 ```
+
+
+### Script Usage
+![image](https://user-images.githubusercontent.com/12107721/114781589-de6eb180-9d46-11eb-8945-4290efc33f2b.png)
 
 
 ### TODO:
 
 - [x] Set any interaction to bring windows back
 - [x] Run on startup with windows hidden
-- [ ] Allow IDLE_MINUTES to be set from command line
+- [x] Add command line argument to trigger after x minutes of being idle
+- [x] Add command line argument to specify whether to run upon logon of current user
+- [ ] Add command line argument to choose if script should hide after running.
 - [ ] Hide desktop icons when minimizing
 - [ ] Remember how desktop icons were set before minimizing (no point bringing them back if the user had them hidden before)
