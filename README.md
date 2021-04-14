@@ -17,7 +17,7 @@ python toggle_hide_windows.py -h
 
 
 ### Script Usage
-![image](https://user-images.githubusercontent.com/12107721/114781589-de6eb180-9d46-11eb-8945-4290efc33f2b.png)
+![image](assets/example_usage.png)
 
 
 ### TODO:
