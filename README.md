@@ -26,6 +26,7 @@ python toggle_hide_windows.py -h
 - [x] Run on startup with windows hidden
 - [x] Add command line argument to trigger after x minutes of being idle
 - [x] Add command line argument to specify whether to run upon logon of current user
+- [ ] Add command line argument to lock screen after trigger (upon user returning)
 - [ ] Add command line argument to choose if script should hide after running.
 - [ ] Hide desktop icons when minimizing
 - [ ] Remember how desktop icons were set before minimizing (no point bringing them back if the user had them hidden before)
