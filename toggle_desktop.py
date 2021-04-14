@@ -28,7 +28,7 @@ def toggle_hide_windows():
 
 
 if __name__ == "__main__":
-    IDLE_MINUTES = 15 # (15 minutes)
+    IDLE_MINUTES = 15*60 # (15 minutes)
     # Create the start up file
     appdata = os.getenv('APPDATA')
     
